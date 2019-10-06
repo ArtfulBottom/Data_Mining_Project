@@ -1,2 +1,3 @@
 *.json
 release.txt
+*.DS_Store
