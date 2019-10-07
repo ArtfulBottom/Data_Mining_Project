@@ -1,3 +1,5 @@
-*.json
+ids.json
+*.data.json
+*.label.json
 release.txt
 *.DS_Store
