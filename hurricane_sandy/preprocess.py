@@ -15,14 +15,28 @@ dates_dfs = [pd.DataFrame(columns=[column for column in df.columns]) for date in
 for i in range(0, len(dates_dfs)):
     dates_dfs[i] = df[df['date'] == dates[i]]
     dates_dfs[i] = dates_dfs[i][:40000]
-    dates_dfs[i] = dates_dfs[i].sample(2000, random_state=47)
-    # print(date_df[date_df['sandy_keyword'] == True].shape[0])
+    # print(dates_dfs[i][dates_dfs[i]['sandy_keyword'] == True].shape[0])
+    # print(dates_dfs[i][dates_dfs[i]['sandy_keyword'] == False].shape[0])
+    # print(' ')
+    # num_true = dates_dfs[i][dates_dfs[i]['sandy_keyword'] == True]
+    # sandy = num_true.sample(min(2000, num_true.shape[0]), random_state=47)
+    # non_sandy = dates_dfs[i][dates_dfs[i]['sandy_keyword'] == False].sample(2000 - sandy.shape[0], random_state=47)
+
+    # dates_dfs[i] = pd.concat([sandy, non_sandy])
+    # print(dates_dfs[i].shape[0])
+    # print(dates_dfs[i][dates_dfs[i]['sandy_keyword'] == True].shape[0])
+    # print(dates_dfs[i][dates_dfs[i]['sandy_keyword'] == False].shape[0])
+    dates_dfs[i] = dates_dfs[i].sample(5000, random_state=47)
+    # print(dates_dfs[i].shape[0])
+    # print(dates_dfs[i][dates_dfs[i]['sandy_keyword'] == True].shape[0])
+    # print(dates_dfs[i][dates_dfs[i]['sandy_keyword'] == False].shape[0])
+    # print(' ')
+    # dates_dfs[i] = dates_dfs[i].sample(2000, random_state=47)
 
 result = pd.concat(dates_dfs)
-# print(result.head())
 result = result.apply(lambda x: json.dumps({'tweet_id': extract_id(x['id']), 'date': x['date'], 'sandy_keyword': x['sandy_keyword']}), axis=1)
 print(df.head())
-result.to_csv('sampled_ids.json', header=False, index=False, quoting=csv.QUOTE_NONE, sep='|')
+result.to_csv('sampled_ids_2.json', header=False, index=False, quoting=csv.QUOTE_NONE, sep='|')
 
 # df = pd.read_csv('release.txt', sep='\t')
 # df = df.apply(lambda x: json.dumps({'tweet_id': extract_id(x['id']), 'date': x['date'], 'sandy_keyword': x['sandy_keyword']}), axis=1)
