@@ -4,12 +4,12 @@ import pandas as pd
 df = pd.DataFrame(columns=['tweet_id', 'text', 'date', 'short_date', 'geo_coordinates', 'sandy_keyword'])
 dictionary = {}
 
-with open('sampled_ids/sampled_ids_2.json.label.json') as labels:
+with open('sample3/sampled_ids_3.json.label.json') as labels:
     for l in labels:
         jobj = json.loads(l.strip())
         dictionary[jobj['tweet_id']] = {'tweet_id': jobj['tweet_id'], 'short_date': jobj['date'], 'sandy_keyword': jobj['sandy_keyword']}
 
-with open('sampled_ids/sampled_ids_2.json.data.json') as data:
+with open('sample3/sampled_ids_3.json.data.json') as data:
     for d in data:
         jobj = json.loads(d.strip())
         dic = dictionary[str(jobj['id'])] 
@@ -33,4 +33,4 @@ with open('sampled_ids/sampled_ids_2.json.data.json') as data:
 #         df = df.append(value, ignore_index=True)
 
 print(df.head())
-df.to_csv('processed_tweets.csv', index=False)
+df.to_csv('processed_tweets_sample3.csv', index=False)
