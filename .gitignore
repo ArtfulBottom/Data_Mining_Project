@@ -2,5 +2,4 @@
 release.txt
 *.DS_Store
 
-!2015_Nepal_Earthquake_unlabelled_ids.txt
 !*/downloaded_tweets/*
