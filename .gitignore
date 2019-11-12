@@ -1,7 +1,6 @@
 *.json
 release.txt
 *.DS_Store
-*/__MACOSX/*
 
 !2015_Nepal_Earthquake_unlabelled_ids.txt
 !*/downloaded_tweets/*
