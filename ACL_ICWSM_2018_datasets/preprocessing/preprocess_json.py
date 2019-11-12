@@ -15,6 +15,7 @@ with open('../downloaded_tweets/ids_all.json.label.json') as fr:
 	for l in fr:
 		jobj = json.loads(l.strip())
 		if dic.get(jobj['tweet_id']) is not None:
+			dic[jobj['tweet_id']]['text'] = jobj['text']
 			dic[jobj['tweet_id']]['relevance_label'] = jobj['label']
 
 relevant_dates_dic = {}
@@ -43,4 +44,4 @@ le = preprocessing.LabelEncoder()
 le.fit(sorted(df['day_label'].unique()))
 df['day_label'] = le.transform(df['day_label'])
 
-df.to_csv('preprocessed.csv')
+df.to_csv('preprocessed.csv', index_label='id')
