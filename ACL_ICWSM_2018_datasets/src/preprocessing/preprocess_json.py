@@ -43,9 +43,6 @@ print('')
 for i in sorted(irrelevant_dates_dic.keys()):
 	print((i, irrelevant_dates_dic[i]), end=' ')
 
-# print(sorted(relevant_dates_dic.keys()))
-# print(sorted(irrelevant_dates_dic.keys()))
-
 # Move relevance column to the end.
 df = pd.DataFrame.from_dict(dic, orient='index')
 df = df.join(df.pop('relevance_label'))
