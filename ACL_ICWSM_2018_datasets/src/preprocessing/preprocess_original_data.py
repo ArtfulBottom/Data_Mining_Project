@@ -3,9 +3,6 @@ import json
 import csv
 import sys
 
-def extract_id(text):
-    return text.split(',')[1].split(':')[1]
-
 df_train = pd.read_csv('../../original_data/nepal/2015_Nepal_Earthquake_train.tsv', sep='\t', encoding='iso-8859-1')
 df_train = df_train.apply(lambda x: json.dumps({'tweet_id': str(x['tweet_id']), 'text': x['text'], 'label': x['label']}), axis=1)
 
