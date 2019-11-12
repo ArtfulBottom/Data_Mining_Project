@@ -36,8 +36,15 @@ for key, value in dic.items():
 			irrelevant_dates_dic[dates_key] = 0
 		irrelevant_dates_dic[dates_key] += 1
 
-print(relevant_dates_dic)
-print(irrelevant_dates_dic)
+for i in sorted(relevant_dates_dic.keys()):
+	print((i, relevant_dates_dic[i]), end=' ')
+
+print('')
+for i in sorted(irrelevant_dates_dic.keys()):
+	print((i, irrelevant_dates_dic[i]), end=' ')
+
+# print(sorted(relevant_dates_dic.keys()))
+# print(sorted(irrelevant_dates_dic.keys()))
 
 # Move relevance column to the end.
 df = pd.DataFrame.from_dict(dic, orient='index')
