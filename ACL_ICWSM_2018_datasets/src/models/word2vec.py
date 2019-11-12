@@ -26,5 +26,7 @@ VOCAB_SIZE = len(VOCAB)
 # Pad data.
 tokenizer = Tokenizer(num_words=MAX_SEQUENCE_LENGTH)
 tokenizer.fit_on_texts(df['text'].tolist())
+sequences = tokenizer.texts_to_sequences(df['text'].tolist())
 print(df['text'])
-print(tokenizer.texts_to_sequences(df['text'].tolist()))
+print(len(sequences))
+print(sequences[0])
