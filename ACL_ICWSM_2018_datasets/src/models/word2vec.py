@@ -12,8 +12,8 @@ class word2vec:
 	def __init__(self):
 		self.EMBEDDING_DIM = 300
 		self.word2vec_path = 'C:/Users/lukesnyder/Documents/SMART/DjangoServer/DEV/SMART/static/SMART/data/GoogleNews-vectors-negative300.bin.gz'
-		self.word2vec = gensim.models.KeyedVectors.load_word2vec_format(word2vec_path, binary=True)
-		# self.word2vec = []
+		# self.word2vec = gensim.models.KeyedVectors.load_word2vec_format(self.word2vec_path, binary=True)
+		self.word2vec = []
 
 	# Pad data.
 	def pad(self, data):
@@ -34,8 +34,7 @@ class word2vec:
 
 		for word, index in word_index.items():
 			self.embedding_weights[index, :] = self.word2vec[word] if word in self.word2vec else np.random.rand(self.EMBEDDING_DIM)
-
-		print(self.embedding_weights.shape)
+			
 		self.embedding_layer = Embedding(self.embedding_weights.shape[0], self.embedding_weights.shape[1], 
 			input_length=self.MAX_SEQUENCE_LENGTH, weights=[self.embedding_weights], trainable=False)
 

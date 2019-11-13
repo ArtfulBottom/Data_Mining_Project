@@ -3,6 +3,7 @@ import numpy as np
 import sys
 from word2vec import *
 from sklearn.linear_model import LogisticRegression
+from sklearn.svm import SVC
 
 if __name__=='__main__':	
 	# Read input data.
@@ -18,7 +19,7 @@ if __name__=='__main__':
 	train_data = df.drop(test_data.index)
 	class_column = 'relevance_label'
 
-	lr_model = LogisticRegression(penalty='l2', max_iter=500).fit(
+	lr_model = SVC().fit(
 		w2v.compute_average_weights(train_data['tokens']), train_data[class_column]
 	)
 
