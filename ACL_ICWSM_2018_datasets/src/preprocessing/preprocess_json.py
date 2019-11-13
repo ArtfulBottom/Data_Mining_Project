@@ -61,6 +61,11 @@ df[text_field] = df[text_field].str.replace(r'[^A-Za-z0-9(),!?@\'\`\"\_\n]', ' '
 df[text_field] = df[text_field].str.replace(r'\'', '')
 df[text_field] = df[text_field].str.replace(r'@', 'at')
 df[text_field] = df[text_field].str.lower()
+
+# Convert relevance label to integers.
+df.loc[df['relevance_label'] == 'relevant', 'relevance_label'] = 0
+df.loc[df['relevance_label'] == 'not_relevant', 'relevance_label'] = 1
+
 print(df)
 
 # Save data.
