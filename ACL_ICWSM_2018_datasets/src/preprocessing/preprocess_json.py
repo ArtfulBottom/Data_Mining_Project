@@ -2,17 +2,20 @@ import pandas as pd
 import numpy as np
 import csv
 import json
+import sys
 from sklearn import preprocessing
 
+input_base_file = sys.argv[1]
+output_file = sys.argv[2]
 dic = {}
 
 # Process downloaded tweet IDs.
-with open('../../downloaded_tweets/ids_all.json.data.json') as fr:
+with open(input_base_file + '.data.json') as fr:
 	for l in fr:
 		jobj = json.loads(l.strip())
 		dic[jobj['id_str']] = {'created_at': jobj['created_at']}
 
-with open('../../downloaded_tweets/ids_all.json.label.json') as fr:
+with open(input_base_file + '.label.json') as fr:
 	for l in fr:
 		jobj = json.loads(l.strip())
 		if dic.get(jobj['tweet_id']) is not None:
@@ -70,4 +73,4 @@ df.loc[df['relevance_label'] == 'not_relevant', 'relevance_label'] = 1
 print(df)
 
 # Save data.
-df.to_csv('preprocessed_data.csv', index_label='id')
+df.to_csv(output_file, index_label='id')

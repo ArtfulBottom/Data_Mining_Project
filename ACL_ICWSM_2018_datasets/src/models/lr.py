@@ -16,7 +16,8 @@ if __name__=='__main__':
 	w2v.create_embeddings(df['tokens'])
 
 	test_data = df.sample(frac=0.2, random_state=25)
-	train_data = df.drop(test_data.index)
+	valid_data = df.drop(test_data.index).sample(frac=0.2, random_state=47)
+	train_data = df.drop(test_data.index).drop(valid_data.index)
 	class_column = 'relevance_label'
 
 	# Obtain average vectors for train and test data.
