@@ -1,12 +1,9 @@
 import pandas as pd
 import numpy as np
 import sys
-from nltk.tokenize import RegexpTokenizer
 from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.sequence import pad_sequences
-from keras.layers import Embedding
 import gensim
-import tensorflow as tf
 
 class word2vec:
 	def __init__(self, word2vec_path):
@@ -33,25 +30,9 @@ class word2vec:
 
 		for word, index in word_index.items():
 			self.embedding_weights[index, :] = self.word2vec[word] if word in self.word2vec else np.random.rand(self.EMBEDDING_DIM)
-		
-		self.embedding_layer = Embedding(self.embedding_weights.shape[0], self.embedding_weights.shape[1], 
-			input_length=self.MAX_SEQUENCE_LENGTH, weights=[self.embedding_weights], trainable=False)
 
 	# Compute average embedding weights for each data point.
 	def compute_average_weights(self, data):
-		# init_g = tf.compat.v1.global_variables_initializer()
-		# init_l = tf.compat.v1.local_variables_initializer()
-
-		# with tf.Session() as sess:
-		# 	sess.run(init_g)
-		# 	sess.run(init_l)
-
-		# 	tensor = tf.convert_to_tensor(np.asarray(list(data), np.float32), dtype=tf.float32)
-		# 	embedded = self.embedding_layer(tensor)
-		# 	print(embedded.eval())
-		# 	print(' ')
-			
-		# 	return np.average(embedded.eval(), axis=1)
 		averages = [
 			np.average([self.embedding_weights[token] for token in tokens], axis=0)
 			for tokens in data

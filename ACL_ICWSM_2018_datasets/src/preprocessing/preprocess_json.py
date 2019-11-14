@@ -22,6 +22,7 @@ with open('../../downloaded_tweets/ids_all.json.label.json') as fr:
 # Process number of tweets posted each day.
 relevant_dates_dic = {}
 irrelevant_dates_dic = {}
+
 for key, value in dic.items():
 	tokens = value['created_at'].split()
 	dates_key = tokens[1] + tokens[2]
