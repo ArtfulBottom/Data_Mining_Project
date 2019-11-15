@@ -17,25 +17,30 @@ if __name__=='__main__':
 	w2v.create_embeddings(df['tokens'])
 
 	test_data = df.sample(frac=0.2, random_state=25)
-	valid_data = df.drop(test_data.index).sample(frac=0.2, random_state=47)
-	train_data = df.drop(test_data.index).drop(valid_data.index)
+	train_data = df.drop(test_data.index)
 	class_column = 'relevance_label'
 
 	# Obtain average vectors for train and test data.
 	average_weights_train = normalize(w2v.compute_average_weights(train_data['tokens']), axis=0)
 	average_weights_test = normalize(w2v.compute_average_weights(test_data['tokens']), axis=0)
 
-	# Evaluate LR without temporal dimension.
+	# Evaluate SVM without temporal dimension.
 	svm_model = SVC(kernel='linear', C=100).fit(average_weights_train, train_data[class_column])
 
-	train_predictions = svm_model.predict(average_weights_train)
-	test_predictions = svm_model.predict(average_weights_test)
+	train_accuracy = svm_model.score(average_weights_train, train_data[class_column])
+	test_accuracy = svm_model.score(average_weights_test, test_data[class_column])
 
-	train_accuracy = np.average(train_predictions == train_data[class_column])
-	test_accuracy = np.average(test_predictions == test_data[class_column])
+	print('SVM + word2vec train accuracy: %.4f' % (train_accuracy * 100))
+	print('SVM + word2vec test_accuracy: %.4f' % (test_accuracy * 100))
 
-	print('SVM + word2vec train accuracy: %.4f' % train_accuracy)
-	print('SVM + word2vec test_accuracy: %.4f' % test_accuracy)
+	# Evaluate SVM with only temporal dimension.
+	svm_model.fit([[label] for label in train_data['day_label']], train_data[class_column])
+
+	train_accuracy = svm_model.score([[label] for label in train_data['day_label']], train_data[class_column])
+	test_accuracy = svm_model.score([[label] for label in test_data['day_label']], test_data[class_column])
+
+	print('SVM + time train accuracy: %.4f' % (train_accuracy * 100))
+	print('SVM + time test_accuracy: %.4f' % (test_accuracy * 100))
 
 	# Add temporal dimension to features.
 	average_weights_train_temporal = normalize(np.reshape(np.asarray(train_data['day_label']), (len(train_data['day_label']), 1)))
@@ -44,20 +49,11 @@ if __name__=='__main__':
 	average_weights_train = np.concatenate((average_weights_train, average_weights_train_temporal), axis=1)
 	average_weights_test = np.concatenate((average_weights_test, average_weights_test_temporal), axis=1)
 
-	# Evaluate LR with temporal dimension.
+	# Evaluate SVM with w2v + temporal dimension.
 	svm_model.fit(average_weights_train, train_data[class_column])
 
-	train_predictions = svm_model.predict(average_weights_train)
-	test_predictions = svm_model.predict(average_weights_test)
+	train_accuracy = svm_model.score(average_weights_train, train_data[class_column])
+	test_accuracy = svm_model.score(average_weights_test, test_data[class_column])
 
-	# # Evaluate LR with temporal dimension.
-	# svm_model.fit([[label] for label in train_data['day_label']], train_data[class_column])
-
-	# train_predictions = svm_model.predict([[label] for label in train_data['day_label']])
-	# test_predictions = svm_model.predict([[label] for label in test_data['day_label']])
-
-	train_accuracy = np.average(train_predictions == train_data[class_column])
-	test_accuracy = np.average(test_predictions == test_data[class_column])
-
-	print('SVM + word2vec + day train accuracy: %.4f' % train_accuracy)
-	print('SVM + word2vec + day test_accuracy: %.4f' % test_accuracy)
+	print('SVM + word2vec + time train accuracy: %.4f' % (train_accuracy * 100))
+	print('SVM + word2vec + time test_accuracy: %.4f' % (test_accuracy * 100))

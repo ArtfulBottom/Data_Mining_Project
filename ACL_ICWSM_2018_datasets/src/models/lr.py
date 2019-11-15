@@ -16,8 +16,7 @@ if __name__=='__main__':
 	w2v.create_embeddings(df['tokens'])
 
 	test_data = df.sample(frac=0.2, random_state=25)
-	valid_data = df.drop(test_data.index).sample(frac=0.2, random_state=47)
-	train_data = df.drop(test_data.index).drop(valid_data.index)
+	train_data = df.drop(test_data.index)
 	class_column = 'relevance_label'
 
 	# Obtain average vectors for train and test data.
@@ -25,32 +24,35 @@ if __name__=='__main__':
 	average_weights_test = 	w2v.compute_average_weights(test_data['tokens'])
 
 	# Evaluate LR without temporal dimension.
-	lr_model = LogisticRegression(penalty='l2', max_iter=500).fit(average_weights_train, train_data[class_column])
+	lr_model = LogisticRegression(penalty='l2', max_iter=1000).fit(average_weights_train, train_data[class_column])
 
-	train_predictions = lr_model.predict(average_weights_train)
-	test_predictions = lr_model.predict(average_weights_test)
+	train_accuracy = lr_model.score(average_weights_train, train_data[class_column])
+	test_accuracy = lr_model.score(average_weights_test, test_data[class_column])
 
-	train_accuracy = np.average(train_predictions == train_data[class_column])
-	test_accuracy = np.average(test_predictions == test_data[class_column])
+	print('LR + word2vec train accuracy: %.4f' % (train_accuracy * 100))
+	print('LR + word2vec test_accuracy: %.4f' % (test_accuracy * 100))
 
-	print('LR + word2vec train accuracy: %.4f' % train_accuracy)
-	print('LR + word2vec test_accuracy: %.4f' % test_accuracy)
+	# Evaluate SVM with only temporal dimension.
+	lr_model.fit([[label] for label in train_data['day_label']], train_data[class_column])
+
+	train_accuracy = lr_model.score([[label] for label in train_data['day_label']], train_data[class_column])
+	test_accuracy = lr_model.score([[label] for label in test_data['day_label']], test_data[class_column])
+
+	print('LR + time train accuracy: %.4f' % (train_accuracy * 100))
+	print('LR + time test_accuracy: %.4f' % (test_accuracy * 100))
 
 	# Add temporal dimension to features.
-	average_weights_train_labels = np.reshape(np.asarray(train_data['day_label']), (len(train_data['day_label']), 1))
-	average_weights_test_labels = np.reshape(np.asarray(test_data['day_label']), (len(test_data['day_label']), 1))
+	train_time_labels = np.reshape(np.asarray(train_data['day_label']), (len(train_data['day_label']), 1))
+	test_time_labels = np.reshape(np.asarray(test_data['day_label']), (len(test_data['day_label']), 1))
 
-	average_weights_train = np.concatenate((average_weights_train, average_weights_train_labels), axis=1)
-	average_weights_test = np.concatenate((average_weights_test, average_weights_test_labels), axis=1)
+	average_weights_train = np.concatenate((average_weights_train, train_time_labels), axis=1)
+	average_weights_test = np.concatenate((average_weights_test, test_time_labels), axis=1)
 
-	# Evaluate LR with temporal dimension.
+	# Evaluate LR with w2v + temporal dimension.
 	lr_model.fit(average_weights_train, train_data[class_column])
 
-	train_predictions = lr_model.predict(average_weights_train)
-	test_predictions = lr_model.predict(average_weights_test)
+	train_accuracy = lr_model.score(average_weights_train, train_data[class_column])
+	test_accuracy = lr_model.score(average_weights_test, test_data[class_column])
 
-	train_accuracy = np.average(train_predictions == train_data[class_column])
-	test_accuracy = np.average(test_predictions == test_data[class_column])
-
-	print('LR + word2vec + day train accuracy: %.4f' % train_accuracy)
-	print('LR + word2vec + day test_accuracy: %.4f' % test_accuracy)
+	print('LR + word2vec + time train accuracy: %.4f' % (train_accuracy * 100))
+	print('LR + word2vec + time test_accuracy: %.4f' % (test_accuracy * 100))
