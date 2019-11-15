@@ -44,17 +44,17 @@ if __name__=='__main__':
 	average_weights_train = np.concatenate((average_weights_train, average_weights_train_temporal), axis=1)
 	average_weights_test = np.concatenate((average_weights_test, average_weights_test_temporal), axis=1)
 
-	# # Evaluate LR with temporal dimension.
-	# svm_model.fit(average_weights_train, train_data[class_column])
-
-	# train_predictions = svm_model.predict(average_weights_train)
-	# test_predictions = svm_model.predict(average_weights_test)
-
 	# Evaluate LR with temporal dimension.
-	svm_model.fit([[label] for label in train_data['day_label']], train_data[class_column])
+	svm_model.fit(average_weights_train, train_data[class_column])
 
-	train_predictions = svm_model.predict([[label] for label in train_data['day_label']])
-	test_predictions = svm_model.predict([[label] for label in test_data['day_label']])
+	train_predictions = svm_model.predict(average_weights_train)
+	test_predictions = svm_model.predict(average_weights_test)
+
+	# # Evaluate LR with temporal dimension.
+	# svm_model.fit([[label] for label in train_data['day_label']], train_data[class_column])
+
+	# train_predictions = svm_model.predict([[label] for label in train_data['day_label']])
+	# test_predictions = svm_model.predict([[label] for label in test_data['day_label']])
 
 	train_accuracy = np.average(train_predictions == train_data[class_column])
 	test_accuracy = np.average(test_predictions == test_data[class_column])
