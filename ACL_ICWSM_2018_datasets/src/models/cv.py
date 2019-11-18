@@ -5,7 +5,7 @@ from word2vec import *
 from sklearn.svm import SVC
 from sklearn.preprocessing import normalize
 from sklearn.linear_model import LogisticRegression
-from sklearn.model_selection import cross_val_score
+from sklearn.model_selection import GridSearchCV
 
 def kfold_cv(data, word2vec_path, model_choice):
 	# Setup data: w2v, time, and w2v + time.
@@ -29,17 +29,17 @@ def kfold_cv(data, word2vec_path, model_choice):
 		# Find best parameters for w2v.
 		gs.fit(average_weights, data[class_label])
 		print('Best parameters for for LR word2vec: %r' % gs.best_params_)
-		print('Corresponding accuracy: %.4f' % (gs.cv_results_['mean_test_score'] * 100), end='\n\n')
+		print('Corresponding accuracy: %.4f' % (gs.best_score_ * 100), end='\n\n')
 
 		# Find best parameters for time.
 		gs.fit(time_feature, data[class_label])
 		print('Best parameters for for LR time: %r' % gs.best_params_)
-		print('Corresponding accuracy: %.4f' % (gs.cv_results_['mean_test_score'] * 100), end='\n\n')
+		print('Corresponding accuracy: %.4f' % (gs.best_score_ * 100), end='\n\n')
 
 		# Find best parameters for w2v + time.
 		gs.fit(average_weights_time, data[class_label])
 		print('Best parameters for for LR word2vec + time: %r' % gs.best_params_)
-		print('Corresponding accuracy: %.4f' % (gs.cv_results_['mean_test_score'] * 100))
+		print('Corresponding accuracy: %.4f' % (gs.best_score_ * 100))
 
 	elif model_choice == 'SVM':
 		average_weights = normalize(average_weights, axis=0)
@@ -51,17 +51,17 @@ def kfold_cv(data, word2vec_path, model_choice):
 		# Find best parameters for w2v.
 		gs.fit(average_weights, data[class_label])
 		print('Best parameters for for SVM word2vec: %r' % gs.best_params_)
-		print('Corresponding accuracy: %.4f' % (gs.cv_results_['mean_test_score'] * 100), end='\n\n')
+		print('Corresponding accuracy: %.4f' % (gs.best_score_ * 100), end='\n\n')
 
 		# Find best parameters for time.
 		gs.fit(time_feature, data[class_label])
 		print('Best parameters for for SVM time: %r' % gs.best_params_)
-		print('Corresponding accuracy: %.4f' % (gs.cv_results_['mean_test_score'] * 100), end='\n\n')
+		print('Corresponding accuracy: %.4f' % (gs.best_score_ * 100), end='\n\n')
 
 		# Find best parameters for w2v + time.
 		gs.fit(average_weights_time, data[class_label])
 		print('Best parameters for for SVM word2vec + time: %r' % gs.best_params_)
-		print('Corresponding accuracy: %.4f' % (gs.cv_results_['mean_test_score'] * 100))
+		print('Corresponding accuracy: %.4f' % (gs.best_score_ * 100))
 
 if __name__=='__main__':
 	input_file = sys.argv[1]

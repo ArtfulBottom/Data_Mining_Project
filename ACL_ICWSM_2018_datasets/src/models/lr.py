@@ -24,7 +24,7 @@ if __name__=='__main__':
 	average_weights_test = 	w2v.compute_average_weights(test_data['tokens'])
 
 	# Evaluate LR without temporal dimension.
-	lr_model = LogisticRegression(penalty='l2', max_iter=1000).fit(average_weights_train, train_data[class_column])
+	lr_model = LogisticRegression(penalty='l2', C=1000, max_iter=1000).fit(average_weights_train, train_data[class_column])
 
 	train_accuracy = lr_model.score(average_weights_train, train_data[class_column])
 	test_accuracy = lr_model.score(average_weights_test, test_data[class_column])
@@ -32,8 +32,8 @@ if __name__=='__main__':
 	print('LR + word2vec train accuracy: %.4f' % (train_accuracy * 100))
 	print('LR + word2vec test_accuracy: %.4f' % (test_accuracy * 100))
 
-	# Evaluate SVM with only temporal dimension.
-	lr_model.fit([[label] for label in train_data['day_label']], train_data[class_column])
+	# Evaluate LR with only temporal dimension.
+	lr_model = LogisticRegression(penalty='l2', C=0.1, max_iter=1000).fit([[label] for label in train_data['day_label']], train_data[class_column])
 
 	train_accuracy = lr_model.score([[label] for label in train_data['day_label']], train_data[class_column])
 	test_accuracy = lr_model.score([[label] for label in test_data['day_label']], test_data[class_column])
@@ -49,7 +49,7 @@ if __name__=='__main__':
 	average_weights_test = np.concatenate((average_weights_test, test_time_labels), axis=1)
 
 	# Evaluate LR with w2v + temporal dimension.
-	lr_model.fit(average_weights_train, train_data[class_column])
+	lr_model = LogisticRegression(penalty='l2', C=1, max_iter=1000).fit(average_weights_train, train_data[class_column])
 
 	train_accuracy = lr_model.score(average_weights_train, train_data[class_column])
 	test_accuracy = lr_model.score(average_weights_test, test_data[class_column])
