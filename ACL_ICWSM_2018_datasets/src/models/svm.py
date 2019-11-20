@@ -7,10 +7,10 @@ from sklearn.preprocessing import normalize
 
 if __name__=='__main__':	
 	# Read input data.
-	inputfile = sys.argv[1]
+	input_file = sys.argv[1]
 	word2vec_path = sys.argv[2]
 
-	df = pd.read_csv(inputfile)
+	df = pd.read_csv(input_file)
 	w2v = word2vec(word2vec_path)
 
 	df['tokens'] = w2v.pad(df['text'].tolist())
@@ -34,7 +34,7 @@ if __name__=='__main__':
 	print('SVM + word2vec test_accuracy: %.4f' % (test_accuracy * 100))
 
 	# Evaluate SVM with only temporal dimension.
-	svm_model.fit([[label] for label in train_data['day_label']], train_data[class_column])
+	svm_model = SVC(kernel='rbf', C=0.1).fit([[label] for label in train_data['day_label']], train_data[class_column])
 
 	train_accuracy = svm_model.score([[label] for label in train_data['day_label']], train_data[class_column])
 	test_accuracy = svm_model.score([[label] for label in test_data['day_label']], test_data[class_column])
@@ -50,7 +50,7 @@ if __name__=='__main__':
 	average_weights_test = np.concatenate((average_weights_test, average_weights_test_temporal), axis=1)
 
 	# Evaluate SVM with w2v + temporal dimension.
-	svm_model.fit(average_weights_train, train_data[class_column])
+	svm_model = SVC(kernel='linear', C=100).fit(average_weights_train, train_data[class_column])
 
 	train_accuracy = svm_model.score(average_weights_train, train_data[class_column])
 	test_accuracy = svm_model.score(average_weights_test, test_data[class_column])

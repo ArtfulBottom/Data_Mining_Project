@@ -39,3 +39,11 @@ class word2vec:
 		]
 
 		return averages
+
+	def test(self, data):
+		averages = np.zeros(shape=(len(data), self.MAX_SEQUENCE_LENGTH * self.EMBEDDING_DIM))
+		for i, tokens in enumerate(data):
+			for j, token in enumerate(tokens):
+				averages[i, j * self.EMBEDDING_DIM: (j + 1) * self.EMBEDDING_DIM] = self.embedding_weights[token]
+
+		return averages

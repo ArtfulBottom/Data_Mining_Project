@@ -28,17 +28,17 @@ def kfold_cv(data, word2vec_path, model_choice):
 
 		# Find best parameters for w2v.
 		gs.fit(average_weights, data[class_label])
-		print('Best parameters for for LR word2vec: %r' % gs.best_params_)
+		print('Best parameters for LR word2vec: %r' % gs.best_params_)
 		print('Corresponding accuracy: %.4f' % (gs.best_score_ * 100), end='\n\n')
 
 		# Find best parameters for time.
 		gs.fit(time_feature, data[class_label])
-		print('Best parameters for for LR time: %r' % gs.best_params_)
+		print('Best parameters for LR time: %r' % gs.best_params_)
 		print('Corresponding accuracy: %.4f' % (gs.best_score_ * 100), end='\n\n')
 
 		# Find best parameters for w2v + time.
 		gs.fit(average_weights_time, data[class_label])
-		print('Best parameters for for LR word2vec + time: %r' % gs.best_params_)
+		print('Best parameters for LR word2vec + time: %r' % gs.best_params_)
 		print('Corresponding accuracy: %.4f' % (gs.best_score_ * 100))
 
 	elif model_choice == 'SVM':
@@ -50,17 +50,17 @@ def kfold_cv(data, word2vec_path, model_choice):
 
 		# Find best parameters for w2v.
 		gs.fit(average_weights, data[class_label])
-		print('Best parameters for for SVM word2vec: %r' % gs.best_params_)
+		print('Best parameters for SVM word2vec: %r' % gs.best_params_)
 		print('Corresponding accuracy: %.4f' % (gs.best_score_ * 100), end='\n\n')
 
 		# Find best parameters for time.
 		gs.fit(time_feature, data[class_label])
-		print('Best parameters for for SVM time: %r' % gs.best_params_)
+		print('Best parameters for SVM time: %r' % gs.best_params_)
 		print('Corresponding accuracy: %.4f' % (gs.best_score_ * 100), end='\n\n')
 
 		# Find best parameters for w2v + time.
 		gs.fit(average_weights_time, data[class_label])
-		print('Best parameters for for SVM word2vec + time: %r' % gs.best_params_)
+		print('Best parameters for SVM word2vec + time: %r' % gs.best_params_)
 		print('Corresponding accuracy: %.4f' % (gs.best_score_ * 100))
 
 if __name__=='__main__':

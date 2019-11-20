@@ -1,0 +1,9 @@
+Nepal
+------
+LR: C = 1000, 0.1, 1
+SVM: Kernel, C = (linear, 100), (rbf, 0.1), (linear, 100)
+
+Queensland
+------
+LR: C = 1, 0.1, 1
+SVM: Kernel, C = (linear, 100), (rbf, 0.1) , (linear, 100)
