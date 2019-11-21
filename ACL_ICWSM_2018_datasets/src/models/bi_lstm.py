@@ -3,7 +3,8 @@ import numpy as np
 import sys
 from word2vec import *
 from keras.models import Sequential
-from keras.layers import Dense, Dropout, LSTM, Bidirectional
+from keras.layers import Dense, Dropout, LSTM, Bidirectional, Concatenate
+from keras import backend as K
 
 if __name__=='__main__':	
 	# Read input data.
@@ -21,8 +22,8 @@ if __name__=='__main__':
 	class_column = 'relevance_label'
 
 	# Obtain average vectors for train and test data.
-	average_weights_train = np.asarray(w2v.compute_average_weights(train_data['tokens']))
-	average_weights_test = np.asarray(w2v.compute_average_weights(test_data['tokens']))
+	average_weights_train = w2v.compute_all_weights(train_data['tokens'])
+	average_weights_test = w2v.compute_all_weights(test_data['tokens'])
 
 	# Setup hyperparameters.
 	batch_size = 32
@@ -31,21 +32,32 @@ if __name__=='__main__':
 
 	# Evaluate Bi-LSTM without temporal dimension.
 	bi_lstm = Sequential()
-	bi_lstm.add(Dense(w2v.EMBEDDING_DIM, input_shape=(w2v.EMBEDDING_DIM, )))
+	bi_lstm.add(Dense(batch_size, input_shape=(w2v.MAX_SEQUENCE_LENGTH, w2v.EMBEDDING_DIM)))
+	bi_lstm.add(Bidirectional(LSTM(w2v.EMBEDDING_DIM, dropout=0.5)))
+	bi_lstm.add(Dense(1, activation='sigmoid'))
+
+	bi_lstm.compile('adam', 'binary_crossentropy', metrics=['accuracy'])
+	bi_lstm.fit(average_weights_train, np.asarray(train_data[class_column]), batch_size=batch_size, epochs=num_epochs)
+
+	print('BiLSTM + word2vec train accuracy: %.4f' % (bi_lstm.evaluate(average_weights_train, train_data[class_column], batch_size=batch_size)[1] * 100))
+	print('BiLSTM + word2vec test accuracy: %.4f' % (bi_lstm.evaluate(average_weights_test, test_data[class_column], batch_size=batch_size)[1] * 100))
+
+	K.clear_session()
+
+	# Evaluate Bi-LSTM without temporal dimension.
+	time_train = [[label] for label in train_data['day_label']]
+	time_test = [[label] for label in test_data['day_label']]
+
+	bi_lstm = Sequential()
+	bi_lstm.add(Dense(batch_size, input_shape=(w2v.MAX_SEQUENCE_LENGTH, w2v.EMBEDDING_DIM)))
 	bi_lstm.add(Bidirectional(LSTM(w2v.EMBEDDING_DIM)))
 	bi_lstm.add(Dropout(0.5))
 	bi_lstm.add(Dense(1, activation='sigmoid'))
 
 	bi_lstm.compile('adam', 'binary_crossentropy', metrics=['accuracy'])
-	bi_lstm.fit(average_weights_train, np.asarray(train_data[class_column]), batch_size=batch_size, epochs=num_epochs)
-	print('BiLSTM + word2vec train accuracy: %.4f' % (model.evaluate(average_weights_train, train_data[class_column], batch_size=batch_size)) * 100)
-	print('BiLSTM + word2vec test accuracy: %.4f' % (model.evaluate(average_weights_test, test_data[class_column], batch_size=batch_size)) * 100)
-
-	train_accuracy = bi_lstm.score(average_weights_train, np.asarray(train_data[class_column]))
-	test_accuracy = bi_lstm.score(average_weights_test, np.asarray(test_data[class_column]))
-
-	print('SVM + word2vec train accuracy: %.4f' % (train_accuracy * 100))
-	print('SVM + word2vec test_accuracy: %.4f' % (test_accuracy * 100))
+	bi_lstm.fit(time_train, np.asarray(train_data[class_column]), batch_size=batch_size, epochs=num_epochs)
+	print('BiLSTM + word2vec train accuracy: %.4f' % (bi_lstm.evaluate(time_train, train_data[class_column], batch_size=batch_size)) * 100)
+	print('BiLSTM + word2vec test accuracy: %.4f' % (bi_lstm.evaluate(time_test, test_data[class_column], batch_size=batch_size)) * 100)
 
 	# # Evaluate SVM with only temporal dimension.
 	# svm_model = SVC(kernel='rbf', C=0.1).fit([[label] for label in train_data['day_label']], train_data[class_column])

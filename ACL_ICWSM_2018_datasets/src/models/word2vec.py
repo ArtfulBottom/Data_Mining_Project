@@ -8,8 +8,8 @@ import gensim
 class word2vec:
 	def __init__(self, word2vec_path):
 		self.EMBEDDING_DIM = 300
-		self.word2vec = gensim.models.KeyedVectors.load_word2vec_format(word2vec_path, binary=True)
-		# self.word2vec = []
+		# self.word2vec = gensim.models.KeyedVectors.load_word2vec_format(word2vec_path, binary=True)
+		self.word2vec = []
 
 	# Pad data.
 	def pad(self, data):
@@ -40,10 +40,10 @@ class word2vec:
 
 		return averages
 
-	def test(self, data):
-		averages = np.zeros(shape=(len(data), self.MAX_SEQUENCE_LENGTH * self.EMBEDDING_DIM))
+	def compute_all_weights(self, data):
+		weights = np.zeros(shape=(len(data), self.MAX_SEQUENCE_LENGTH, self.EMBEDDING_DIM))
 		for i, tokens in enumerate(data):
 			for j, token in enumerate(tokens):
-				averages[i, j * self.EMBEDDING_DIM: (j + 1) * self.EMBEDDING_DIM] = self.embedding_weights[token]
+				weights[i, j, :] = self.embedding_weights[token]
 
-		return averages
+		return weights
