@@ -2,8 +2,8 @@ import pandas as pd
 import numpy as np
 import sys
 from word2vec import *
-from keras.models import Sequential
-from keras.layers import Dense, Dropout, LSTM, Bidirectional, Concatenate
+from keras.models import *
+from keras.layers import *
 from keras import backend as K
 
 if __name__=='__main__':	
@@ -30,10 +30,10 @@ if __name__=='__main__':
 	dropout = 0.5
 	num_epochs = 4
 
-	# Evaluate Bi-LSTM without temporal dimension.
+	# Evaluate NN without temporal dimension.
 	bi_lstm = Sequential()
 	bi_lstm.add(Dense(batch_size, input_shape=(w2v.MAX_SEQUENCE_LENGTH, w2v.EMBEDDING_DIM)))
-	bi_lstm.add(Bidirectional(LSTM(w2v.EMBEDDING_DIM, dropout=0.5)))
+	bi_lstm.add(Bidirectional(LSTM(w2v.EMBEDDING_DIM, dropout=0.5, recurrent_dropout=0.5, activation='relu')))
 	bi_lstm.add(Dense(1, activation='sigmoid'))
 
 	bi_lstm.compile('adam', 'binary_crossentropy', metrics=['accuracy'])
@@ -44,43 +44,37 @@ if __name__=='__main__':
 
 	K.clear_session()
 
-	# Evaluate Bi-LSTM without temporal dimension.
-	time_train = [[label] for label in train_data['day_label']]
-	time_test = [[label] for label in test_data['day_label']]
+	# Evaluate NN with only temporal dimension.
+	nn = Sequential()
+	nn.add(Dense(batch_size, input_dim=1, activation='relu'))
+	nn.add(Dropout(0.5))
+	nn.add(Dense(1, activation='sigmoid'))
 
+	nn.compile('adam', 'binary_crossentropy', metrics=['accuracy'])
+	nn.fit(np.asarray(train_data['day_label']), np.asarray(train_data[class_column]), batch_size=batch_size, epochs=num_epochs)
+	print('NN_time train accuracy: %.4f' % (nn.evaluate(np.asarray(train_data['day_label']), train_data[class_column], batch_size=batch_size)[1] * 100))
+	print('NN_time test accuracy: %.4f' % (nn.evaluate(np.asarray(test_data['day_label']), test_data[class_column], batch_size=batch_size)[1] * 100))
+
+	K.clear_session()
+
+	# Evaluate NN with w2v + temporal dimension.
 	bi_lstm = Sequential()
 	bi_lstm.add(Dense(batch_size, input_shape=(w2v.MAX_SEQUENCE_LENGTH, w2v.EMBEDDING_DIM)))
-	bi_lstm.add(Bidirectional(LSTM(w2v.EMBEDDING_DIM)))
-	bi_lstm.add(Dropout(0.5))
-	bi_lstm.add(Dense(1, activation='sigmoid'))
+	bi_lstm.add(Bidirectional(LSTM(w2v.EMBEDDING_DIM, dropout=0.5, recurrent_dropout=0.5, activation='relu')))
+	bi_lstm.add(Dense(32, activation='relu'))
 
-	bi_lstm.compile('adam', 'binary_crossentropy', metrics=['accuracy'])
-	bi_lstm.fit(time_train, np.asarray(train_data[class_column]), batch_size=batch_size, epochs=num_epochs)
-	print('BiLSTM + word2vec train accuracy: %.4f' % (bi_lstm.evaluate(time_train, train_data[class_column], batch_size=batch_size)) * 100)
-	print('BiLSTM + word2vec test accuracy: %.4f' % (bi_lstm.evaluate(time_test, test_data[class_column], batch_size=batch_size)) * 100)
+	nn = Sequential()
+	nn.add(Dense(batch_size, input_dim=1, activation='relu'))
+	nn.add(Dropout(0.5))
 
-	# # Evaluate SVM with only temporal dimension.
-	# svm_model = SVC(kernel='rbf', C=0.1).fit([[label] for label in train_data['day_label']], train_data[class_column])
+	merged_out = Add()([bi_lstm.output, nn.output])
+	merged_out = Dense(1, activation='sigmoid')(merged_out)
 
-	# train_accuracy = svm_model.score([[label] for label in train_data['day_label']], train_data[class_column])
-	# test_accuracy = svm_model.score([[label] for label in test_data['day_label']], test_data[class_column])
+	model = Model([bi_lstm.input, nn.input], merged_out)
+	model.compile('adam', 'binary_crossentropy', metrics=['accuracy'])
 
-	# print('SVM + time train accuracy: %.4f' % (train_accuracy * 100))
-	# print('SVM + time test_accuracy: %.4f' % (test_accuracy * 100))
+	model.fit([average_weights_train, np.asarray(train_data['day_label'])], np.asarray(train_data[class_column]), batch_size=batch_size, epochs=num_epochs)
+	print('BiLSTM + NN_time train accuracy: %.4f' % (model.evaluate([average_weights_train, np.asarray(train_data['day_label'])], train_data[class_column], batch_size=batch_size)[1] * 100))
+	print('BiLSTM + NN_time test accuracy: %.4f' % (model.evaluate([average_weights_test, np.asarray(test_data['day_label'])], test_data[class_column], batch_size=batch_size)[1] * 100))
 
-	# # Add temporal dimension to features.
-	# average_weights_train_temporal = normalize(np.reshape(np.asarray(train_data['day_label']), (len(train_data['day_label']), 1)))
-	# average_weights_test_temporal = normalize(np.reshape(np.asarray(test_data['day_label']), (len(test_data['day_label']), 1)))
-
-	# average_weights_train = np.concatenate((average_weights_train, average_weights_train_temporal), axis=1)
-	# average_weights_test = np.concatenate((average_weights_test, average_weights_test_temporal), axis=1)
-
-	# # Evaluate SVM with w2v + temporal dimension.
-	# svm_model = SVC(kernel='linear', C=100).fit(average_weights_train, train_data[class_column])
-
-	# train_accuracy = svm_model.score(average_weights_train, train_data[class_column])
-	# test_accuracy = svm_model.score(average_weights_test, test_data[class_column])
-
-	# print('SVM + word2vec + time train accuracy: %.4f' % (train_accuracy * 100))
-	# print('SVM + word2vec + time test_accuracy: %.4f' % (test_accuracy * 100))
-
+	K.clear_session()
