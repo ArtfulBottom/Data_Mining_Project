@@ -24,6 +24,7 @@ import logging
 import json
 import re
 import pandas as pd
+import numpy  as np
 
 import torch
 from torch.utils.data import TensorDataset, DataLoader, SequentialSampler
@@ -82,10 +83,10 @@ def convert_examples_to_features(examples, seq_length, tokenizer):
         # The convention in BERT is:
         # (a) For sequence pairs:
         #  tokens:   [CLS] is this jack ##son ##ville ? [SEP] no it is not . [SEP]
-        #  type_ids: 0   0  0    0    0     0       0 0    1  1  1  1   1 1
+        #  type_ids: 0     0  0    0      0     0     0 0     1  1  1  1   1  1
         # (b) For single sequences:
         #  tokens:   [CLS] the dog is hairy . [SEP]
-        #  type_ids: 0   0   0   0  0     0 0
+        #  type_ids: 0     0   0   0  0     0 0
         #
         # Where "type_ids" are used to indicate whether this is the first
         # sequence or the second sequence. The embedding vectors for `type=0` and
@@ -165,25 +166,27 @@ def _truncate_seq_pair(tokens_a, tokens_b, max_length):
         else:
             tokens_b.pop()
 
-
 def read_examples(input_file):
     df = pd.read_csv(input_file)
     #preprocess data-strip
     df['ProcessedText'] = df.text.str.strip()
-    #BERT preprocess
-    df['ProcessedText_BERT'] = '[CLS] '+df.ProcessedText
+    tokens = df.ProcessedText.split()
+    tokens_masked = []
+    np.random.seed(0)
+    for i in range(len(tokens)):
+        cur = tokens[i]
+        maskedId = np.random.choice(len(cur), int(len(cur)*0.15+0.5))
+        for tid in maskedId:
+            cur[tid] = '[MASK]'
+        tokens_masked.append('[CLS] ' +  ' '.join([str(v) for v in cur]))
+    # df['ProcessedText_bert_mask'] = tokens_masked
+    df['ProcessedText_BERT'] = tokens_masked
     """Read a list of `InputExample`s from an input file."""
     examples = []
     unique_id = 0
     for line in df['ProcessedText_BERT']:
         text_a = line
         text_b = None
-        # m = re.match(r"^(.*) \|\|\| (.*)$", line)
-        # if m is None:
-        #     text_a = line
-        # else:
-        #     text_a = m.group(1)
-        #     text_b = m.group(2)
         examples.append(
             InputExample(unique_id=unique_id, text_a=text_a, text_b=text_b))
         unique_id += 1
