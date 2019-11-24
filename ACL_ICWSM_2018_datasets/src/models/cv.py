@@ -45,7 +45,7 @@ def create_w2v_bilstm_time(learn_rate=0.001, batch_size=64, dropout=0.4):
 	bi_lstm = Sequential()
 	bi_lstm.add(Dense(batch_size, input_shape=(w2v.MAX_SEQUENCE_LENGTH, w2v.EMBEDDING_DIM)))
 	bi_lstm.add(Bidirectional(LSTM(w2v.EMBEDDING_DIM, dropout=dropout, activation='relu')))
-	bi_lstm.add(Dense(32, activation='relu'))
+	bi_lstm.add(Dense(batch_size, activation='relu'))
 
 	nn = Sequential()
 	nn.add(Dense(batch_size, input_dim=1, activation='relu'))
