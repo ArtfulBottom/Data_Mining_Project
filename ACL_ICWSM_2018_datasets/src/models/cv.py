@@ -49,7 +49,7 @@ def create_w2v_bilstm_time(learn_rate=0.001, batch_size=64, dropout=0.4):
 
 	nn = Sequential()
 	nn.add(Dense(batch_size, input_dim=1, activation='relu'))
-	nn.add(Dropout(0.5))
+	nn.add(Dropout(dropout))
 
 	merged_out = Add()([bi_lstm.output, nn.output])
 	merged_out = Dense(1, activation='sigmoid')(merged_out)
@@ -142,6 +142,8 @@ def kfold_cv(data, word2vec_path, model_choice):
 		print('Best parameters for BiLSTM word2vec: %r' % best_grid)
 		print('Corresponding accuracy: %.4f' % (best_score * 100))
 
+		K.clear_session()
+
 		best_score = 0
 		for p in ParameterGrid(param_grid):
 			w2v_time_model = create_w2v_time(learn_rate=p['learn_rate'], batch_size=p['batch_size'], dropout=p['dropout'])
@@ -155,18 +157,22 @@ def kfold_cv(data, word2vec_path, model_choice):
 		print('Best parameters for BiLSTM time: %r' % best_grid)
 		print('Corresponding accuracy: %.4f' % (best_score * 100))
 
+		K.clear_session()
+
 		best_score = 0
 		for p in ParameterGrid(param_grid):
 			w2v_bilstm_time_model = create_w2v_bilstm_time(learn_rate=p['learn_rate'], batch_size=p['batch_size'], dropout=p['dropout'])
 			w2v_bilstm_time_model.fit([weights, data['day_label']], data[class_label], batch_size=p['batch_size'], epochs=p['epochs'])
 
-			accuracy = w2v_time_model.evaluate([w2v.compute_all_weights(dev['tokens']), dev['day_label']], dev[class_label], batch_size=p['batch_size'], epochs=p['epochs'])[1]
+			accuracy = w2v_bilstm_time_model.evaluate([w2v.compute_all_weights(dev['tokens']), dev['day_label']], dev[class_label], batch_size=p['batch_size'], epochs=p['epochs'])[1]
 			if accuracy > best_score:
 				best_score = accuracy
 				best_grid = p
 
 		print('Best parameters for BiLSTM word2vec + time: %r' % best_grid)
 		print('Corresponding accuracy: %.4f' % (best_score * 100))
+
+		K.clear_session()
 
 if __name__=='__main__':
 	input_file = sys.argv[1]
