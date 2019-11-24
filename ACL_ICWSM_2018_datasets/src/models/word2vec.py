@@ -8,8 +8,8 @@ import gensim
 class word2vec:
 	def __init__(self, word2vec_path):
 		self.EMBEDDING_DIM = 300
-		# self.word2vec = gensim.models.KeyedVectors.load_word2vec_format(word2vec_path, binary=True)
-		self.word2vec = []
+		self.word2vec = gensim.models.KeyedVectors.load_word2vec_format(word2vec_path, binary=True)
+		# self.word2vec = []
 
 	# Pad data.
 	def pad(self, data):
