@@ -134,7 +134,7 @@ def kfold_cv(data, word2vec_path, model_choice):
 			w2v_bilstm_model = create_w2v_bilstm(learn_rate=p['learn_rate'], batch_size=p['batch_size'], dropout=p['dropout'])
 			w2v_bilstm_model.fit(weights, data[class_label], batch_size=p['batch_size'], epochs=p['epochs'], verbose=0)
 
-			accuracy = w2v_bilstm_model.evaluate(w2v.compute_all_weights(dev['tokens']), dev[class_label], batch_size=p['batch_size'], epochs=p['epochs'], verbose=0)[1]
+			accuracy = w2v_bilstm_model.evaluate(w2v.compute_all_weights(dev['tokens']), dev[class_label], batch_size=p['batch_size'], verbose=0)[1]
 			if accuracy > best_score:
 				best_score = accuracy
 				best_grid = p
@@ -149,7 +149,7 @@ def kfold_cv(data, word2vec_path, model_choice):
 			w2v_time_model = create_w2v_time(learn_rate=p['learn_rate'], batch_size=p['batch_size'], dropout=p['dropout'])
 			w2v_time_model.fit(np.asarray(data['day_label']), data[class_label], batch_size=p['batch_size'], epochs=p['epochs'], verbose=0)
 
-			accuracy = w2v_time_model.evaluate(np.asarray(dev['day_label']), dev[class_label], batch_size=p['batch_size'], epochs=p['epochs'], verbose=0)[1]
+			accuracy = w2v_time_model.evaluate(np.asarray(dev['day_label']), dev[class_label], batch_size=p['batch_size'], verbose=0)[1]
 			if accuracy > best_score:
 				best_score = accuracy
 				best_grid = p
@@ -164,7 +164,7 @@ def kfold_cv(data, word2vec_path, model_choice):
 			w2v_bilstm_time_model = create_w2v_bilstm_time(learn_rate=p['learn_rate'], batch_size=p['batch_size'], dropout=p['dropout'])
 			w2v_bilstm_time_model.fit([weights, data['day_label']], data[class_label], batch_size=p['batch_size'], epochs=p['epochs'], verbose=0)
 
-			accuracy = w2v_bilstm_time_model.evaluate([w2v.compute_all_weights(dev['tokens']), dev['day_label']], dev[class_label], batch_size=p['batch_size'], epochs=p['epochs'], verbose=0)[1]
+			accuracy = w2v_bilstm_time_model.evaluate([w2v.compute_all_weights(dev['tokens']), dev['day_label']], dev[class_label], batch_size=p['batch_size'], verbose=0)[1]
 			if accuracy > best_score:
 				best_score = accuracy
 				best_grid = p
