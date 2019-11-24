@@ -39,8 +39,8 @@ if __name__=='__main__':
 	bi_lstm.compile('adam', 'binary_crossentropy', metrics=['accuracy'])
 	bi_lstm.fit(average_weights_train, np.asarray(train_data[class_column]), batch_size=batch_size, epochs=num_epochs)
 
-	print('BiLSTM + word2vec train accuracy: %.4f' % (bi_lstm.evaluate(average_weights_train, train_data[class_column], batch_size=batch_size)[1] * 100))
-	print('BiLSTM + word2vec test accuracy: %.4f' % (bi_lstm.evaluate(average_weights_test, test_data[class_column], batch_size=batch_size)[1] * 100))
+	print('BiLSTM + word2vec train accuracy: %.4f' % (bi_lstm.evaluate(average_weights_train, train_data[class_column], batch_size=batch_size, epochs=num_epochs)[1] * 100))
+	print('BiLSTM + word2vec test accuracy: %.4f' % (bi_lstm.evaluate(average_weights_test, test_data[class_column], batch_size=batch_size, epochs=num_epochs)[1] * 100))
 
 	K.clear_session()
 
@@ -52,8 +52,8 @@ if __name__=='__main__':
 
 	nn.compile('adam', 'binary_crossentropy', metrics=['accuracy'])
 	nn.fit(np.asarray(train_data['day_label']), np.asarray(train_data[class_column]), batch_size=batch_size, epochs=num_epochs)
-	print('NN_time train accuracy: %.4f' % (nn.evaluate(np.asarray(train_data['day_label']), train_data[class_column], batch_size=batch_size)[1] * 100))
-	print('NN_time test accuracy: %.4f' % (nn.evaluate(np.asarray(test_data['day_label']), test_data[class_column], batch_size=batch_size)[1] * 100))
+	print('NN_time train accuracy: %.4f' % (nn.evaluate(np.asarray(train_data['day_label']), train_data[class_column], batch_size=batch_size, epochs=num_epochs)[1] * 100))
+	print('NN_time test accuracy: %.4f' % (nn.evaluate(np.asarray(test_data['day_label']), test_data[class_column], batch_size=batch_size, epochs=num_epochs)[1] * 100))
 
 	K.clear_session()
 
@@ -74,7 +74,7 @@ if __name__=='__main__':
 	model.compile('adam', 'binary_crossentropy', metrics=['accuracy'])
 
 	model.fit([average_weights_train, np.asarray(train_data['day_label'])], np.asarray(train_data[class_column]), batch_size=batch_size, epochs=num_epochs)
-	print('BiLSTM + NN_time train accuracy: %.4f' % (model.evaluate([average_weights_train, np.asarray(train_data['day_label'])], train_data[class_column], batch_size=batch_size)[1] * 100))
-	print('BiLSTM + NN_time test accuracy: %.4f' % (model.evaluate([average_weights_test, np.asarray(test_data['day_label'])], test_data[class_column], batch_size=batch_size)[1] * 100))
+	print('BiLSTM + NN_time train accuracy: %.4f' % (model.evaluate([average_weights_train, np.asarray(train_data['day_label'])], train_data[class_column], batch_size=batch_size, epochs=num_epochs)[1] * 100))
+	print('BiLSTM + NN_time test accuracy: %.4f' % (model.evaluate([average_weights_test, np.asarray(test_data['day_label'])], test_data[class_column], batch_size=batch_size, epochs=num_epochs)[1] * 100))
 
 	K.clear_session()

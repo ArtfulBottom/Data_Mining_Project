@@ -6,13 +6,14 @@ from sklearn.svm import SVC
 from sklearn.preprocessing import normalize
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import ParameterGrid
 from keras.models import *
 from keras.layers import *
 from keras.optimizers import Adam
 from keras.wrappers.scikit_learn import KerasClassifier
 from keras import backend as K
 
-def create_w2v_bilstm(learn_rate=0.001, batch_size=64, epochs=4, dropout=0.4):
+def create_w2v_bilstm(learn_rate=0.001, batch_size=64, dropout=0.4):
 	global w2v
 
 	bi_lstm = Sequential()
@@ -25,7 +26,7 @@ def create_w2v_bilstm(learn_rate=0.001, batch_size=64, epochs=4, dropout=0.4):
 
 	return bi_lstm
 
-def create_w2v_time(learn_rate=0.001, dropout=0.4):
+def create_w2v_time(learn_rate=0.001, batch_size=64, dropout=0.4):
 	global w2v
 
 	nn = Sequential()
@@ -38,7 +39,7 @@ def create_w2v_time(learn_rate=0.001, dropout=0.4):
 
 	return nn
 
-def create_w2v_bilstm_time(learn_rate=0.001, dropout=0.4):
+def create_w2v_bilstm_time(learn_rate=0.001, batch_size=64, dropout=0.4):
 	global w2v
 
 	bi_lstm = Sequential()
@@ -120,30 +121,52 @@ def kfold_cv(data, word2vec_path, model_choice):
 		batch_size = [64, 128]
 		epochs = [4, 10]
 		learn_rate = [0.001, 0.01]
-		dropout = [0.4, 0.8]
+		dropout = [0.2, 0.4]
+
+		dev = data.sample(frac=0.2, random_state=37)
+		data = data.drop(dev.index)
 
 		param_grid = dict(learn_rate=learn_rate, batch_size=batch_size, epochs=epochs, dropout=dropout)
-
 		weights = w2v.compute_all_weights(data['tokens'])
 
-		w2v_bilstm_model = KerasClassifier(build_fn=create_w2v_bilstm, verbose=0)
-		w2v_time_model = KerasClassifier(build_fn=create_w2v_time, verbose=0)
-		w2v_bilstm_time_model = KerasClassifier(build_fn=create_w2v_bilstm_time, verbose=0)
+		best_score = 0
+		for p in ParameterGrid(param_grid):
+			w2v_bilstm_model = create_w2v_bilstm(learn_rate=p['learn_rate'], batch_size=p['batch_size'], dropout=p['dropout'])
+			w2v_bilstm_model.fit(weights, data[class_label], batch_size=p['batch_size'], epochs=p['epochs'])
 
-		gs = GridSearchCV(estimator=w2v_bilstm_model, param_grid=param_grid, cv=2)
-		gs.fit(weights, data[class_label])
-		print('Best parameters for BiLSTM word2vec: %r' % gs.best_params_)
-		print('Corresponding accuracy: %.4f' % (gs.best_score_ * 100))
+			accuracy = w2v_bilstm_model.evaluate(w2v.compute_all_weights(dev['tokens']), dev[class_label], batch_size=p['batch_size'], epochs=p['epochs'])[1]
+			if accuracy > best_score:
+				best_score = accuracy
+				best_grid = p
 
-		gs = GridSearchCV(estimator=w2v_time_model, param_grid=param_grid, cv=2)
-		gs.fit(np.asarray(data['day_label']), data[class_label])
-		print('Best parameters for BiLSTM time: %r' % gs.best_params_)
-		print('Corresponding accuracy: %.4f' % (gs.best_score_ * 100))
+		print('Best parameters for BiLSTM word2vec: %r' % best_grid)
+		print('Corresponding accuracy: %.4f' % (best_score * 100))
 
-		gs = GridSearchCV(estimator=w2v_bilstm_time_model, param_grid=param_grid, cv=2)
-		gs.fit([weights, np.asarray(data['day_label'])], data[class_label])
-		print('Best parameters for BiLSTM word2vec + time: %r' % gs.best_params_)
-		print('Corresponding accuracy: %.4f' % (gs.best_score_ * 100))
+		best_score = 0
+		for p in ParameterGrid(param_grid):
+			w2v_time_model = create_w2v_time(learn_rate=p['learn_rate'], batch_size=p['batch_size'], dropout=p['dropout'])
+			w2v_time_model.fit(np.asarray(data['day_label']), data[class_label], batch_size=p['batch_size'], epochs=p['epochs'])
+
+			accuracy = w2v_time_model.evaluate(np.asarray(dev['day_label']), dev[class_label], batch_size=p['batch_size'], epochs=p['epochs'])[1]
+			if accuracy > best_score:
+				best_score = accuracy
+				best_grid = p
+
+		print('Best parameters for BiLSTM time: %r' % best_grid)
+		print('Corresponding accuracy: %.4f' % (best_score * 100))
+
+		best_score = 0
+		for p in ParameterGrid(param_grid):
+			w2v_bilstm_time_model = create_w2v_bilstm_time(learn_rate=p['learn_rate'], batch_size=p['batch_size'], dropout=p['dropout'])
+			w2v_bilstm_time_model.fit([weights, data['day_label']], data[class_label], batch_size=p['batch_size'], epochs=p['epochs'])
+
+			accuracy = w2v_time_model.evaluate([w2v.compute_all_weights(dev['tokens']), dev['day_label']], dev[class_label], batch_size=p['batch_size'], epochs=p['epochs'])[1]
+			if accuracy > best_score:
+				best_score = accuracy
+				best_grid = p
+
+		print('Best parameters for BiLSTM word2vec + time: %r' % best_grid)
+		print('Corresponding accuracy: %.4f' % (best_score * 100))
 
 if __name__=='__main__':
 	input_file = sys.argv[1]
