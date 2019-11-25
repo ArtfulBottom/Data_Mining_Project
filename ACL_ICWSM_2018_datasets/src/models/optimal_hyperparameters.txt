@@ -2,8 +2,10 @@ Nepal
 ------
 LR: C = 1000, 0.1, 1
 SVM: Kernel, C = (linear, 100), (rbf, 0.1), (linear, 100)
+BiLSTM: Batch_size, Dropout, Epochs, Learn_rate = (128, 0.4, 10, 0.001), (64, 0.2, 4, 0.001), (64, 0.4, 4, 0.001)
 
 Queensland
 ------
 LR: C = 1, 0.1, 1
 SVM: Kernel, C = (linear, 100), (rbf, 0.1) , (linear, 100)
+BiLSTM: Batch_size, Dropout, Epochs, Learn_rate = (128, 0.2, 4, 0.001), (128, 0.2, 4, 0.01), (64, 0.4, 10, 0.001)
