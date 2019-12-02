@@ -1,0 +1,62 @@
+OMP: Info #250: KMP_AFFINITY: pid 1336 tid 19792 thread 244 bound to OS proc set 8
+OMP: Info #250: KMP_AFFINITY: pid 1336 tid 9292 thread 245 bound to OS proc set 10
+OMP: Info #250: KMP_AFFINITY: pid 1336 tid 8312 thread 246 bound to OS proc set 12
+OMP: Info #250: KMP_AFFINITY: pid 1336 tid 13196 thread 247 bound to OS proc set 14
+OMP: Info #250: KMP_AFFINITY: pid 1336 tid 16096 thread 248 bound to OS proc set 16
+OMP: Info #250: KMP_AFFINITY: pid 1336 tid 13900 thread 249 bound to OS proc set 18
+OMP: Info #250: KMP_AFFINITY: pid 1336 tid 9560 thread 250 bound to OS proc set 20
+OMP: Info #250: KMP_AFFINITY: pid 1336 tid 7856 thread 251 bound to OS proc set 22
+OMP: Info #250: KMP_AFFINITY: pid 1336 tid 21752 thread 252 bound to OS proc set 1
+OMP: Info #250: KMP_AFFINITY: pid 1336 tid 15424 thread 253 bound to OS proc set 3
+OMP: Info #250: KMP_AFFINITY: pid 1336 tid 19284 thread 254 bound to OS proc set 5
+OMP: Info #250: KMP_AFFINITY: pid 1336 tid 17064 thread 255 bound to OS proc set 7
+OMP: Info #250: KMP_AFFINITY: pid 1336 tid 21912 thread 256 bound to OS proc set 9
+OMP: Info #250: KMP_AFFINITY: pid 1336 tid 16576 thread 257 bound to OS proc set 11
+OMP: Info #250: KMP_AFFINITY: pid 1336 tid 16872 thread 258 bound to OS proc set 13
+OMP: Info #250: KMP_AFFINITY: pid 1336 tid 18396 thread 259 bound to OS proc set 15
+OMP: Info #250: KMP_AFFINITY: pid 1336 tid 10868 thread 260 bound to OS proc set 17
+OMP: Info #250: KMP_AFFINITY: pid 1336 tid 18160 thread 261 bound to OS proc set 19
+OMP: Info #250: KMP_AFFINITY: pid 1336 tid 21928 thread 262 bound to OS proc set 21
+OMP: Info #250: KMP_AFFINITY: pid 1336 tid 17048 thread 263 bound to OS proc set 23
+OMP: Info #250: KMP_AFFINITY: pid 1336 tid 9112 thread 264 bound to OS proc set 0
+OMP: Info #250: KMP_AFFINITY: pid 1336 tid 16224 thread 265 bound to OS proc set 2
+OMP: Info #250: KMP_AFFINITY: pid 1336 tid 21592 thread 266 bound to OS proc set 4
+OMP: Info #250: KMP_AFFINITY: pid 1336 tid 14436 thread 267 bound to OS proc set 6
+OMP: Info #250: KMP_AFFINITY: pid 1336 tid 9444 thread 268 bound to OS proc set 8
+OMP: Info #250: KMP_AFFINITY: pid 1336 tid 7880 thread 269 bound to OS proc set 10
+OMP: Info #250: KMP_AFFINITY: pid 1336 tid 21264 thread 270 bound to OS proc set 12
+OMP: Info #250: KMP_AFFINITY: pid 1336 tid 20196 thread 271 bound to OS proc set 14
+OMP: Info #250: KMP_AFFINITY: pid 1336 tid 21692 thread 272 bound to OS proc set 16
+OMP: Info #250: KMP_AFFINITY: pid 1336 tid 18344 thread 273 bound to OS proc set 18
+OMP: Info #250: KMP_AFFINITY: pid 1336 tid 16068 thread 274 bound to OS proc set 20
+OMP: Info #250: KMP_AFFINITY: pid 1336 tid 20292 thread 275 bound to OS proc set 22
+OMP: Info #250: KMP_AFFINITY: pid 1336 tid 20380 thread 276 bound to OS proc set 1
+OMP: Info #250: KMP_AFFINITY: pid 1336 tid 7020 thread 277 bound to OS proc set 3
+OMP: Info #250: KMP_AFFINITY: pid 1336 tid 12492 thread 278 bound to OS proc set 5
+OMP: Info #250: KMP_AFFINITY: pid 1336 tid 16808 thread 279 bound to OS proc set 7
+OMP: Info #250: KMP_AFFINITY: pid 1336 tid 13832 thread 280 bound to OS proc set 9
+OMP: Info #250: KMP_AFFINITY: pid 1336 tid 4128 thread 281 bound to OS proc set 11
+OMP: Info #250: KMP_AFFINITY: pid 1336 tid 7984 thread 282 bound to OS proc set 13
+OMP: Info #250: KMP_AFFINITY: pid 1336 tid 22264 thread 283 bound to OS proc set 15
+OMP: Info #250: KMP_AFFINITY: pid 1336 tid 6380 thread 284 bound to OS proc set 17
+OMP: Info #250: KMP_AFFINITY: pid 1336 tid 20136 thread 285 bound to OS proc set 19
+OMP: Info #250: KMP_AFFINITY: pid 1336 tid 13148 thread 286 bound to OS proc set 21
+OMP: Info #250: KMP_AFFINITY: pid 1336 tid 13612 thread 287 bound to OS proc set 23
+OMP: Info #250: KMP_AFFINITY: pid 1336 tid 17560 thread 288 bound to OS proc set 0
+OMP: Info #250: KMP_AFFINITY: pid 1336 tid 21816 thread 289 bound to OS proc set 2
+OMP: Info #250: KMP_AFFINITY: pid 1336 tid 19572 thread 290 bound to OS proc set 4
+OMP: Info #250: KMP_AFFINITY: pid 1336 tid 6288 thread 291 bound to OS proc set 6
+OMP: Info #250: KMP_AFFINITY: pid 1336 tid 11660 thread 292 bound to OS proc set 8
+OMP: Info #250: KMP_AFFINITY: pid 1336 tid 17116 thread 293 bound to OS proc set 10
+OMP: Info #250: KMP_AFFINITY: pid 1336 tid 13936 thread 294 bound to OS proc set 12
+OMP: Info #250: KMP_AFFINITY: pid 1336 tid 21132 thread 295 bound to OS proc set 14
+OMP: Info #250: KMP_AFFINITY: pid 1336 tid 19252 thread 296 bound to OS proc set 16
+OMP: Info #250: KMP_AFFINITY: pid 1336 tid 15400 thread 297 bound to OS proc set 18
+OMP: Info #250: KMP_AFFINITY: pid 1336 tid 17796 thread 299 bound to OS proc set 22
+OMP: Info #250: KMP_AFFINITY: pid 1336 tid 488 thread 298 bound to OS proc set 20
+Best parameters for BiLSTM word2vec: {'batch_size': 128, 'dropout': 0.4, 'epochs': 10, 'learn_rate': 0.001}
+Corresponding accuracy: 77.8846
+Best parameters for BiLSTM time: {'batch_size': 64, 'dropout': 0.2, 'epochs': 4, 'learn_rate': 0.001}
+Corresponding accuracy: 82.5444
+Best parameters for BiLSTM word2vec + time: {'batch_size': 64, 'dropout': 0.4, 'epochs': 4, 'learn_rate': 0.001}
+Corresponding accuracy: 82.6183
