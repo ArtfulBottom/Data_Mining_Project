@@ -4,4 +4,4 @@ release.txt
 */__pycache__/*
 *.gz
 
-!*/downloaded_tweets/*
+!*/downloaded_tweets/**
