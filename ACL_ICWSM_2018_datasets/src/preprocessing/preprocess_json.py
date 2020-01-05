@@ -4,6 +4,7 @@ import csv
 import json
 import sys
 from sklearn import preprocessing
+import matplotlib.pyplot as plt
 
 input_base_file = sys.argv[1]
 output_file = sys.argv[2]
@@ -40,12 +41,27 @@ for key, value in dic.items():
 			irrelevant_dates_dic[dates_key] = 0
 		irrelevant_dates_dic[dates_key] += 1
 
+sorted_relevant = []
+sorted_irrelevant = []
+
 for i in sorted(relevant_dates_dic.keys()):
+	sorted_relevant.append(relevant_dates_dic[i])
 	print((i, relevant_dates_dic[i]), end=' ')
 
 print('')
 for i in sorted(irrelevant_dates_dic.keys()):
+	sorted_irrelevant.append(irrelevant_dates_dic[i])
 	print((i, irrelevant_dates_dic[i]), end=' ')
+
+plt.bar(np.arange(len(sorted_relevant)), sorted_relevant, color='red', label='Relevant', width=0.25)
+plt.bar(np.arange(len(sorted_irrelevant)) + 0.25, sorted_irrelevant, color='blue', label='Irrelevant', width=0.25)
+plt.xticks(np.arange(len(sorted_relevant)) + 0.125, np.arange(len(sorted_relevant)))
+plt.xlabel('Day Number')
+plt.ylabel('Number of tweets')
+plt.title('Number of relevant/irrelevant tweets per day')
+
+plt.legend()
+plt.show()
 
 # Move relevance column to the end.
 df = pd.DataFrame.from_dict(dic, orient='index')
