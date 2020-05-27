@@ -1,7 +1,7 @@
 *.json
 release.txt
-*.DS_Store
 */__pycache__/*
 *.gz
 
 !*/downloaded_tweets/**
+*.DS_Store
